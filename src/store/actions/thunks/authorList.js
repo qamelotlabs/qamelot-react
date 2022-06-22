@@ -26,7 +26,7 @@ export const fetchAuthorRanking = () => async (dispatch) => {
   try {
     const { data } = await Axios.get(`${api.baseUrl}${api.authorsSales}`, {
       cancelToken: Canceler.token,
-      params: {}
+      params: {} 
     });
 
     dispatch(actions.getAuthorRanking.success(data));

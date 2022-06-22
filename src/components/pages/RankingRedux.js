@@ -1,10 +1,13 @@
 import React, { memo, useEffect, useState } from "react";
-import { useSelector, useDispatch } from 'react-redux';
-import Select from 'react-select'
-import Footer from '../components/footer';
-import { createGlobalStyle } from 'styled-components';
-import * as selectors from '../../store/selectors';
-import { fetchAuthorRanking } from "../../store/actions/thunks";
+import { useSelector, useDispatch } from "react-redux";
+import Select from "react-select";
+import Footer from "../components/footer";
+import { createGlobalStyle } from "styled-components";
+import * as selectors from "../../store/selectors";
+import {
+  fetchAuthorRanking,
+  getNFTsByFilter,
+} from "../../store/actions/thunks";
 import api from "../../core/api";
 
 const GlobalStyles = createGlobalStyle`
@@ -17,15 +20,16 @@ const GlobalStyles = createGlobalStyle`
     background: rgba(255, 255, 255, .1);
   }
   #quick_search{
-    color: black;
     padding: 4px 11px;
-    // border: none;
-    border-radius: 2px;
+    border-color: hsl(0, 0%, 80%);
+    border-radius: 4px;
+    border-style: solid;
     font-size: 15px;
     background: rgba(131, 100, 226, 0.1);
-    width: 274px;
-    height: 34px;
+    width: 600px;
+    height: 40px;
     outline: none;
+    margin-right: 10px;
   }
   header#myHeader.navbar.white .btn, .navbar.white a, .navbar.sticky.white a{
     color: #fff;
@@ -52,7 +56,6 @@ const GlobalStyles = createGlobalStyle`
   }
 `;
 
-
 const customStyles = {
   option: (base, state) => ({
     ...base,
@@ -61,143 +64,240 @@ const customStyles = {
     borderRadius: state.isFocused ? "0" : 0,
     "&:hover": {
       background: "#ddd",
-    }
+    },
   }),
-  menu: base => ({
+  menu: (base) => ({
     ...base,
     background: "#fff !important",
     borderRadius: 0,
-    marginTop: 0
+    marginTop: 0,
   }),
-  menuList: base => ({
+  menuList: (base) => ({
     ...base,
-    padding: 0
+    padding: 0,
   }),
   control: (base, state) => ({
     ...base,
-    padding: 2
-  })
+    padding: 2,
+  }),
 };
 
 const options = [
-  { value: 'Last 7 days', label: 'Last 7 days' },
-  { value: 'Last 24 hours', label: 'Last 24 hours' },
-  { value: 'Last 30 days', label: 'Last 30 days' },
-  { value: 'All time', label: 'All time' }
-]
+  { value: "7d", label: "Last 7 days" },
+  { value: "1d", label: "Last 24 hours" },
+  { value: "30d", label: "Last 30 days" },
+  { value: "all_time", label: "All time" },
+];
 const options1 = [
-  { value: 'All categories', label: 'All categories' },
-  { value: 'Art', label: 'Art' },
-  { value: 'Music', label: 'Music' },
-  { value: 'Domain Names', label: 'Domain Names' },
-  { value: 'Virtual World', label: 'Virtual World' },
-  { value: 'Trading Cards', label: 'Trading Cards' },
-  { value: 'Collectibles', label: 'Collectibles' },
-  { value: 'Sports', label: 'Sports' },
-  { value: 'Utility', label: 'Utility' }
-]
-
+  { value: "All categories", label: "All categories" },
+  { value: "Art", label: "Art" },
+  { value: "Music", label: "Music" },
+  { value: "Domain Names", label: "Domain Names" },
+  { value: "Virtual World", label: "Virtual World" },
+  { value: "Trading Cards", label: "Trading Cards" },
+  { value: "Collectibles", label: "Collectibles" },
+  { value: "Sports", label: "Sports" },
+  { value: "Utility", label: "Utility" },
+];
 
 const RankingRedux = () => {
-
   const dispatch = useDispatch();
-  const authorsState = useSelector(selectors.authorRankingsState);
-  const authorsData = authorsState.data ? authorsState.data : [];
 
-  const [search, setSearch] = useState("");
-  const [authors, setAuthors] = useState(authorsData);
-  const [filteredResults, setFilteredResults] = useState([]);
+  const collectionState = useSelector(selectors.collectionState);
+  const [collections, setCollections] = useState(null);
+  const [searchInputChange, setSearchInputChange] = useState("");
+  const [timeRange, setTimeRange] = useState("24h %");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedTimeRange, setSelectedTimeRange] = useState("oneDayChange");
+
+  const collectionLoadingState = useSelector(selectors.collectionStateLoading);
 
   useEffect(() => {
-    setAuthors(authorsState.data)
-  }, [authorsState.data]);
-  
+    console.log("CURRENT LOADING STATE", collectionLoadingState);
+  }, [collectionLoadingState]);
+
+  useEffect(() => {
+    setCollections(collectionState ? collectionState.data?.data : []);
+  }, [collectionState]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      searchItems(searchInputChange);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [searchInputChange]);
+
   const searchItems = (searchValue) => {
-    setSearch(searchValue);
-    if (searchValue !== '') {
-      const filteredData = authors.filter((author) => {
-        return Object.values(author).join('').toLowerCase().includes(searchValue.toLowerCase());
-      })
-      setAuthors(filteredData); 
-    }else{
-      setAuthors(authorsData);
+    if (searchValue !== "") {
+      const filteredData = collectionState.data?.data.filter((collection) => {
+        return collection.collectionName
+          .toLowerCase()
+          .includes(searchValue.toLowerCase());
+      });
+      setCollections(filteredData);
+    } else {
+      setCollections(collectionState.data?.data);
     }
-  } 
+  };
   useEffect(() => {
-      dispatch(fetchAuthorRanking());
+    dispatch(fetchAuthorRanking());
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(getNFTsByFilter("1d"));
+  }, []);
+  const handleSelection = (val) => {
+    if (val.value === "7d") {
+      setTimeRange("7D%");
+      setSelectedTimeRange("sevenDayChange");
+    } else if (val.value === "1d") {
+      setTimeRange("24h%");
+      setSelectedTimeRange("oneDayChange");
+    } else {
+      setTimeRange("30D%");
+      setSelectedTimeRange("thirtyDayChange");
+    }
+    dispatch(getNFTsByFilter(val.value));
+  };
+
+  const hoverComponent = (collection) => {
+    setTimeout(() => {
+      console.log(collection);
+    }, 2000);
+  };
+  const hoverComponentDisable = () => {
+    setTimeout(() => {
+      console.log("removed");
+    }, 2000);
+  };
   return (
     <div>
-      <GlobalStyles/>
-      <section className='jumbotron breadcumb no-bg' style={{backgroundImage: `url(${'./img/background/subheader.jpg'})`}}>
-        <div className='mainbreadcumb'>
-          <div className='container'>
-            <div className='row m-10-hor'>
-              <div className='col-12'>
-                <h1 className='text-center'>Top NFTs</h1>
+      <GlobalStyles />
+      <section
+        className="jumbotron breadcumb no-bg"
+        style={{ backgroundImage: `url(${"./img/background/subheader.jpg"})` }}
+      >
+        <div className="mainbreadcumb">
+          <div className="container">
+            <div className="row m-10-hor">
+              <div className="col-12">
+                <h1 className="text-center">Top NFTs</h1>
               </div>
             </div>
           </div>
         </div>
       </section>
-      <section className='container'>
-        <div className='row'>
-          <div className='col-lg-12'>
+      <section className="container">
+        <div className="row">
+          <div className="col-lg-12">
             <div className="items_filter centerEl">
-            <input id="quick_search" className="xs-hide" name="quick_search" placeholder="search item here..." type="text" onChange={(e) => searchItems(e.target.value)} />
-            <div className='dropdownSelect one'><Select className='select1' styles={customStyles} menuContainerStyle={{'zIndex': 999}} defaultValue={options[0]} options={options} /></div>
-            <div className='dropdownSelect two'><Select className='select1' styles={customStyles} defaultValue={options1[0]} options={options1} /></div>
+              <div className="dropdownSelect one">
+                <Select
+                  className="select1"
+                  styles={customStyles}
+                  menuContainerStyle={{ zIndex: 999 }}
+                  defaultValue={options[1]}
+                  onChange={handleSelection}
+                  options={options}
+                />
+              </div>
+              <input
+                id="quick_search"
+                className="xs-hide"
+                name="quick_search"
+                placeholder="search item here..."
+                type="text"
+                onChange={(e) => setSearchInputChange(e.target.value)}
+              />
+              <div className="dropdownSelect two">
+                <Select
+                  className="select1"
+                  styles={customStyles}
+                  defaultValue={options1[0]}
+                  onChange={handleSelection}
+                  options={options1}
+                />
+              </div>
             </div>
             <table className="table de-table table-rank">
               <thead>
                 <tr>
+                  <th scope="col"></th>
                   <th scope="col">Collection</th>
-                  <th scope="col">Volume</th>
-                  <th scope="col">24h %</th>
-                  <th scope="col">7d %</th>
+                  <th scope="col">
+                    Volume
+                  </th>
+                  <th scope="col">{timeRange}</th>
                   <th scope="col">Floor Price</th>
                   <th scope="col">Owners</th>
-                  <th scope="col">Assets</th>
+                  <th scope="col">Supply</th>
                 </tr>
                 <tr></tr>
               </thead>
-              <tbody>
-                {
-                  authors && authors.map((author, index) => (
-                    <tr key={index}>
-                      <th scope="row">
-                        <div className="coll_list_pp">
-                          { author.avatar &&
-                            <img className="lazy" src={api.baseUrl + author.avatar.url} alt=""/>
+              {collectionLoadingState ? (
+                <div className="loader">Loading </div>
+              ) : (
+                <tbody>
+                  {collections &&
+                    collections.map((collection, index) => (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <th scope="row">
+                          <div className="coll_list_pp">
+                            <img
+                              className="lazy"
+                              src={
+                                collection.awsBucketImageUrl
+                                  ? collection.awsBucketImageUrl
+                                  : collection.externalImageUrl
+                              }
+                              alt=""
+                              onMouseEnter={() => hoverComponent(collection)}
+                              onMouseLeave={() => hoverComponentDisable()}
+                            />
+                            {collection.safelistRequestStatus ? (
+                              <i className="fa fa-check"></i>
+                            ) : (
+                              ""
+                            )}
+                          </div>
+                          {collection.collectionName}
+                        </th>
+                        <td>{collection.totalVolume}</td>
+                        <td
+                          className={
+                            collection[`${selectedTimeRange}`] < 0
+                              ? "d-min"
+                              : "d-plus"
                           }
-                          <i className="fa fa-check"></i>
-                        </div>  
-                        {author.username}
-                      </th>
-                      <td>{author.author_sale.volume}</td>
-                      <td className={author.author_sale.daily_sales < 0 ? "d-min" : "d-plus"}>{`${author.author_sale.daily_sales < 0 ? '' : '+'}${author.author_sale.daily_sales}%`}</td>
-                      <td className={author.author_sale.weekly_sales < 0 ? "d-min" : "d-plus"}>{`${author.author_sale.weekly_sales < 0 ? '' : '+'}${author.author_sale.weekly_sales}%`}</td>
-                      <td>{author.author_sale.floor_price}</td>
-                      <td>{author.author_sale.owners}k</td>
-                      <td>{author.author_sale.assets}k</td>
-                    </tr>
-                  ))
-                        }
-                
-              </tbody>
+                        >{`${
+                          collection[`${selectedTimeRange}`] < 0 ? "" : "+"
+                        }${collection[`${selectedTimeRange}`]}%`}</td>
+                        {/* <td className={collection.author_sale.weekly_sales < 0 ? "d-min" : "d-plus"}>{`${collection.author_sale.weekly_sales < 0 ? '' : '+'}${collection.author_sale.weekly_sales}%`}</td> */}
+                        <td>{collection.floorPrice}</td>
+                        <td>{collection.numOwners}k</td>
+                        <td>{collection.totalSupply}k</td>
+                      </tr>
+                    ))}
+                </tbody>
+              )}
             </table>
             <div className="spacer-double"></div>
             <ul className="pagination justify-content-center">
-              <li className="active"><span>1 - 20</span></li>
-              <li><span>21 - 40</span></li>
-              <li><span>41 - 60</span></li>
-            </ul> 
+              <li className="active">
+                <span>1 - 100</span>
+              </li>
+              <li>
+                <span className="twenty">21 - 40</span>
+              </li>
+            </ul>
           </div>
         </div>
       </section>
       <Footer />
     </div>
-)};
+  );
+};
 
 export default memo(RankingRedux);

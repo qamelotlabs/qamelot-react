@@ -1,18 +1,19 @@
 import React from 'react';
-
+import { createGlobalStyle } from 'styled-components';
 
 const Wallet= () => (
   <div className="row">
-    <div className="col-lg-3 mb30">
+    <div className="col-lg-3 mb30 metamask">
         <span className="box-url">
             <span className="box-url-label">Most Popular</span>
             <img src="./img/wallet/1.png" alt="" className="mb20"/>
             <h4>Metamask</h4>
             <p>Start exploring blockchain applications in seconds.  Trusted by over 1 million users worldwide.</p>
+            <button type="button" className="btn btn-primary">Connect</button>
         </span>
     </div>
 
-    <div className="col-lg-3 mb30">
+    {/* <div className="col-lg-3 mb30">
         <span className="box-url">
             <img src="./img/wallet/2.png" alt="" className="mb20"/>
             <h4>Bitski</h4>
@@ -68,7 +69,7 @@ const Wallet= () => (
             <h4>Torus</h4>
             <p>Open source protocol for connecting decentralised applications to mobile wallets.</p>
         </span>
-    </div>                                  
+    </div>                                   */}
 </div>
 );
 export default Wallet;
