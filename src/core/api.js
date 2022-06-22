@@ -1,6 +1,6 @@
 const api = {
-    devUrl: 'http://127.0.0.1:8000/v2/collections/', //local api url
-    // devUrl: 'http://qamelot.coming-soon.xyz/v2/collections/', //local api url
+    //devUrl: 'http://127.0.0.1:8000/v2/collections/', //local api url
+    devUrl: 'http://qamelot.coming-soon.xyz/v2/collections/', //local api url
     baseUrl: '/mock_data', //mock data base folder
     nfts: '/nfts.json',
     nftShowcases: '/nft_showcases.json',
