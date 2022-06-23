@@ -7,7 +7,6 @@ import { settingsnew } from "./constants";
 import CustomSlide from "./CustomSlide";
 import * as selectors from '../../store/selectors';
 import { fetchHotCollections } from "../../store/actions/thunks";
-import api from "../../core/api";
 
 const CarouselCollectionRedux = () => {
 
@@ -26,8 +25,8 @@ const CarouselCollectionRedux = () => {
             <CustomSlide
               key={index}
               index={index + 1}
-              avatar={api.baseUrl + item.author.avatar.url}
-              banner={api.baseUrl + item.banner.url}
+              avatar={process.env.REACT_APP_COLLECTION_API_URL + item.author.avatar.url}
+              banner={process.env.REACT_APP_COLLECTION_API_URL + item.banner.url}
               username={item.name}
               uniqueId={item.unique_id}
               collectionId={item.id}

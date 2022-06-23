@@ -4,11 +4,8 @@ import Select from "react-select";
 import Footer from "../components/footer";
 import { createGlobalStyle } from "styled-components";
 import * as selectors from "../../store/selectors";
-import {
-  fetchAuthorRanking,
-  getNFTsByFilter,
-} from "../../store/actions/thunks";
-import api from "../../core/api";
+import { getNFTsByFilter } from "../../store/actions/thunks";
+import Stats from "./Stats";
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.sticky.white {
@@ -88,17 +85,6 @@ const options = [
   { value: "30d", label: "Last 30 days" },
   { value: "all_time", label: "All time" },
 ];
-const options1 = [
-  { value: "All categories", label: "All categories" },
-  { value: "Art", label: "Art" },
-  { value: "Music", label: "Music" },
-  { value: "Domain Names", label: "Domain Names" },
-  { value: "Virtual World", label: "Virtual World" },
-  { value: "Trading Cards", label: "Trading Cards" },
-  { value: "Collectibles", label: "Collectibles" },
-  { value: "Sports", label: "Sports" },
-  { value: "Utility", label: "Utility" },
-];
 
 const RankingRedux = () => {
   const dispatch = useDispatch();
@@ -107,14 +93,12 @@ const RankingRedux = () => {
   const [collections, setCollections] = useState(null);
   const [searchInputChange, setSearchInputChange] = useState("");
   const [timeRange, setTimeRange] = useState("24h %");
+  const [collectionId, setCollectionId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedTimeRange, setSelectedTimeRange] = useState("oneDayChange");
 
+  const [showCollectionStats, setShowCollectionStats] = useState(false);
   const collectionLoadingState = useSelector(selectors.collectionStateLoading);
-
-  useEffect(() => {
-    console.log("CURRENT LOADING STATE", collectionLoadingState);
-  }, [collectionLoadingState]);
 
   useEffect(() => {
     setCollections(collectionState ? collectionState.data?.data : []);
@@ -140,9 +124,6 @@ const RankingRedux = () => {
       setCollections(collectionState.data?.data);
     }
   };
-  useEffect(() => {
-    dispatch(fetchAuthorRanking());
-  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getNFTsByFilter("1d"));
@@ -161,16 +142,15 @@ const RankingRedux = () => {
     dispatch(getNFTsByFilter(val.value));
   };
 
-  const hoverComponent = (collection) => {
-    setTimeout(() => {
-      console.log(collection);
-    }, 2000);
+  const showStats = (id) => {
+    setShowCollectionStats(true);
+    setCollectionId(id);
   };
-  const hoverComponentDisable = () => {
-    setTimeout(() => {
-      console.log("removed");
-    }, 2000);
-  };
+
+  const handleCloseClick = (val) => { 
+    setShowCollectionStats(false);
+  }
+
   return (
     <div>
       <GlobalStyles />
@@ -204,30 +184,26 @@ const RankingRedux = () => {
               </div>
               <input
                 id="quick_search"
-                className="xs-hide"
+                className="select1"
                 name="quick_search"
                 placeholder="search item here..."
                 type="text"
                 onChange={(e) => setSearchInputChange(e.target.value)}
               />
-              <div className="dropdownSelect two">
-                <Select
-                  className="select1"
-                  styles={customStyles}
-                  defaultValue={options1[0]}
-                  onChange={handleSelection}
-                  options={options1}
-                />
-              </div>
             </div>
-            <table className="table de-table table-rank">
+            {showCollectionStats && <Stats handleClose={handleCloseClick} collectionId={collectionId}/>}
+            <table
+              className={
+                showCollectionStats
+                  ? "de-table-compressed table-rank-compressed"
+                  : "de-table table-rank" 
+              }
+            >
               <thead>
                 <tr>
                   <th scope="col"></th>
                   <th scope="col">Collection</th>
-                  <th scope="col">
-                    Volume
-                  </th>
+                  <th scope="col">Volume<img src="../../../public/img/arrow-up.webp" alt=""></img><img src="../../../public/img/arrow-up.webp" alt=""></img></th>
                   <th scope="col">{timeRange}</th>
                   <th scope="col">Floor Price</th>
                   <th scope="col">Owners</th>
@@ -244,7 +220,12 @@ const RankingRedux = () => {
                       <tr key={index}>
                         <td>{index + 1}</td>
                         <th scope="row">
-                          <div className="coll_list_pp">
+                          <div
+                            className="coll_list_pp"
+                            onClick={() => {
+                              showStats(collection.id);
+                            }}
+                          >
                             <img
                               className="lazy"
                               src={
@@ -253,8 +234,6 @@ const RankingRedux = () => {
                                   : collection.externalImageUrl
                               }
                               alt=""
-                              onMouseEnter={() => hoverComponent(collection)}
-                              onMouseLeave={() => hoverComponentDisable()}
                             />
                             {collection.safelistRequestStatus ? (
                               <i className="fa fa-check"></i>
@@ -264,7 +243,8 @@ const RankingRedux = () => {
                           </div>
                           {collection.collectionName}
                         </th>
-                        <td>{collection.totalVolume}</td>
+                        <td>{collection.stats.totalVolume}
+                        </td>
                         <td
                           className={
                             collection[`${selectedTimeRange}`] < 0
@@ -275,9 +255,9 @@ const RankingRedux = () => {
                           collection[`${selectedTimeRange}`] < 0 ? "" : "+"
                         }${collection[`${selectedTimeRange}`]}%`}</td>
                         {/* <td className={collection.author_sale.weekly_sales < 0 ? "d-min" : "d-plus"}>{`${collection.author_sale.weekly_sales < 0 ? '' : '+'}${collection.author_sale.weekly_sales}%`}</td> */}
-                        <td>{collection.floorPrice}</td>
-                        <td>{collection.numOwners}k</td>
-                        <td>{collection.totalSupply}k</td>
+                        <td>{collection.stats.floorPrice}</td>
+                        <td>{collection.stats.numOwners}k</td>
+                        <td>{collection.stats.totalSupply}k</td>
                       </tr>
                     ))}
                 </tbody>

@@ -1,6 +1,5 @@
 import { Axios, Canceler } from '../../../core/axios';
 import * as actions from '../../actions';
-import api from '../../../core/api';
 
 export const fetchNftsBreakdown = (authorId) => async (dispatch, getState) => {
   
@@ -12,7 +11,7 @@ export const fetchNftsBreakdown = (authorId) => async (dispatch, getState) => {
 
   try {
     let filter = authorId ? 'author='+authorId : '';
-    const { data } = await Axios.get(`${api.baseUrl}${api.nfts}?${filter}`, {
+    const { data } = await Axios.get(`${process.env.REACT_APP_COLLECTION_API_URL}${api.nfts}?${filter}`, {
       cancelToken: Canceler.token,
       params: {}
     });
@@ -28,7 +27,7 @@ export const fetchNftShowcase = () => async (dispatch) => {
   dispatch(actions.getNftShowcase.request(Canceler.cancel));
 
   try {
-    const { data } = await Axios.get(`${api.baseUrl}${api.nftShowcases}`, {
+    const { data } = await Axios.get(`${process.env.REACT_APP_COLLECTION_API_URL}${api.nftShowcases}`, {
       cancelToken: Canceler.token,
       params: {}
     });
@@ -44,7 +43,7 @@ export const fetchNftDetail = (nftId) => async (dispatch) => {
   dispatch(actions.getNftDetail.request(Canceler.cancel));
 
   try {
-    const { data } = await Axios.get(`${api.baseUrl}/nft_detail.json`, {
+    const { data } = await Axios.get(`${process.env.REACT_APP_COLLECTION_API_URL}/nft_detail.json`, {
       cancelToken: Canceler.token,
       params: {}
     });

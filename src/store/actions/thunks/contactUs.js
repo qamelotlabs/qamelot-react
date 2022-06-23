@@ -1,9 +1,8 @@
 import { Axios } from '../../../core/axios';
-import api from '../../../core/api';
 
 export const postContactForm = (form) => async () => {
     try {
-        const { data } = await Axios.post(`${api.baseUrl}${api.contactUs}`, form);
+        const { data } = await Axios.post(`${process.env.REACT_APP_COLLECTION_API_URL}${api.contactUs}`, form);
 
         return Promise.resolve(data);
     } catch (err) {

@@ -1,13 +1,12 @@
 import { Axios, Canceler } from '../../../core/axios';
 import * as actions from '../../actions';
-import api from '../../../core/api';
 
 export const getBlogPosts = (postId) => async (dispatch) => {
 
   dispatch(actions.getBlogPosts.request(Canceler.cancel));
 
   try {
-    const { data } = await Axios.get(`${api.baseUrl}${api.blogs}${postId ? '/single.json' : '/all.json'}`, {
+    const { data } = await Axios.get(`${process.env.REACT_APP_COLLECTION_API_URL}${api.blogs}${postId ? '/single.json' : '/all.json'}`, {
       cancelToken: Canceler.token,
       params: {}
     });
@@ -23,7 +22,7 @@ export const getBlogComments = (postId) => async (dispatch) => {
   dispatch(actions.getComments.request(Canceler.cancel));
 
   try {
-    const { data } = await Axios.get(`${api.baseUrl}${api.comments}`, {
+    const { data } = await Axios.get(`${process.env.REACT_APP_COLLECTION_API_URL}${api.comments}`, {
       cancelToken: Canceler.token,
       params: {}
     });
@@ -39,7 +38,7 @@ export const getBlogTags = (postId) => async (dispatch) => {
   dispatch(actions.getTags.request(Canceler.cancel));
 
   try {
-    const { data } = await Axios.get(`${api.baseUrl}${api.tags}`, {
+    const { data } = await Axios.get(`${process.env.REACT_APP_COLLECTION_API_URL}${api.tags}`, {
       cancelToken: Canceler.token,
       params: {}
     });
@@ -55,7 +54,7 @@ export const getRecentPosts = () => async (dispatch) => {
   dispatch(actions.getRecentPosts.request(Canceler.cancel));
 
   try {
-    const { data } = await Axios.get(`${api.baseUrl}${api.recent}`, {
+    const { data } = await Axios.get(`${process.env.REACT_APP_COLLECTION_API_URL}${api.recent}`, {
       cancelToken: Canceler.token
     });
 

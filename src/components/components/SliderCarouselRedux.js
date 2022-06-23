@@ -7,7 +7,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as selectors from '../../store/selectors';
 import { fetchNftShowcase } from "../../store/actions/thunks";
 import { useNavigate } from 'react-router-dom';
-import api from "../../core/api";
 
 const SliderCarouselRedux = () => {
     const navigate = useNavigate();
@@ -36,7 +35,7 @@ const SliderCarouselRedux = () => {
                       </span>
                   </span>
                   <div className="nft_pic_wrap">
-                      <img src={api.baseUrl + nft.preview_image.url} className="lazy img-fluid" alt=""/>
+                      <img src={process.env.REACT_APP_COLLECTION_API_URL + nft.preview_image.url} className="lazy img-fluid" alt=""/>
                   </div>
               </div>
             </div>

@@ -2,7 +2,6 @@ import React, { memo } from 'react';
 import styled from "styled-components";
 import Clock from "./Clock";
 import { useNavigate } from 'react-router-dom';
-import api from '../../core/api';
 
 const Outer = styled.div`
   display: flex;
@@ -36,14 +35,14 @@ const NftCard = ({ nft, className = 'd-item col-lg-3 col-md-6 col-sm-6 col-xs-12
                 }
                 <div className="author_list_pp">
                     <span onClick={()=> navigateTo(nft.author_link)}>                                    
-                        <img className="lazy" src={api.baseUrl + nft.author.avatar.url} alt=""/>
+                        <img className="lazy" src={process.env.REACT_APP_COLLECTION_API_URL + nft.author.avatar.url} alt=""/>
                         <i className="fa fa-check"></i>
                     </span>
                 </div>
                 <div className="nft__item_wrap" style={{height: `${height}px`}}>
                 <Outer>
                     <span>
-                        <img onLoad={onImgLoad} src={api.baseUrl + nft.preview_image.url} className="lazy nft__item_preview" alt=""/>
+                        <img onLoad={onImgLoad} src={process.env.REACT_APP_COLLECTION_API_URL + nft.preview_image.url} className="lazy nft__item_preview" alt=""/>
                     </span>
                 </Outer>
                 </div>

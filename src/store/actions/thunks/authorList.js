@@ -1,6 +1,5 @@
 import { Axios, Canceler } from '../../../core/axios';
 import * as actions from '../../actions';
-import api from '../../../core/api';
 
 export const fetchAuthorList = (authorId) => async (dispatch) => {
 
@@ -8,7 +7,7 @@ export const fetchAuthorList = (authorId) => async (dispatch) => {
 
   try {
     let filter = authorId ? 'id='+authorId : '';
-    const { data } = await Axios.get(`${api.baseUrl}${api.authors}?${filter}`, {
+    const { data } = await Axios.get(`${process.env.REACT_APP_COLLECTION_API_URL}${api.authors}?${filter}`, {
       cancelToken: Canceler.token,
       params: {}
     });
@@ -24,7 +23,7 @@ export const fetchAuthorRanking = () => async (dispatch) => {
   dispatch(actions.getAuthorRanking.request(Canceler.cancel));
 
   try {
-    const { data } = await Axios.get(`${api.baseUrl}${api.authorsSales}`, {
+    const { data } = await Axios.get(`${process.env.REACT_APP_COLLECTION_API_URL}${api.authorsSales}`, {
       cancelToken: Canceler.token,
       params: {} 
     });

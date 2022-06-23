@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import api from '../../core/api';
 
 //react functional component
 const UserTopSeller = ({ user }) => {
@@ -7,7 +6,7 @@ const UserTopSeller = ({ user }) => {
         <>
             <div className="author_list_pp">
               <span onClick={()=> window.open("", "_self")}>
-                  <img className="lazy" src={api.baseUrl + user.avatar.url} alt=""/>
+                  <img className="lazy" src={process.env.REACT_APP_COLLECTION_API_URL + user.avatar.url} alt=""/>
                   <i className="fa fa-check"></i>
               </span>
             </div>                                    

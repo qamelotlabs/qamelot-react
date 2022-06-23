@@ -7,8 +7,6 @@ import * as Yup from 'yup';
 import auth, { authorUrl } from '../../../core/auth';
 import request from '../../../core/auth/request';
 import { useNavigate } from 'react-router-dom';
-import api from "../../../core/api";
-import { fetchAuthorList } from "../../../store/actions/thunks";
 import * as selectors from '../../../store/selectors';
 import axios from "axios";
 
@@ -99,7 +97,7 @@ const Profile = ({ authorId }) => {
 
         await axios({
             method: 'post',
-            url : `${api.baseUrl}/upload`,
+            url : `${process.env.REACT_APP_COLLECTION_API_URL}/upload`,
             data: formData,
             headers: {
                 Authorization: `Bearer ${jwt}`,
@@ -137,15 +135,11 @@ const Profile = ({ authorId }) => {
         };
         reader.readAsDataURL(file);
     }
-
-    useEffect(() => {
-        dispatch(fetchAuthorList(authorId));
-    }, [dispatch, authorId]);
     
     return  (
         <div>
             <GlobalStyles/>
-            <section id='profile_banner' className='jumbotron breadcumb no-bg' style={{backgroundImage: `url(${api.baseUrl + (author && author.banner && author.banner.url ? author.banner.url : '/uploads/4_1ec08f99e2.jpg')})`}}>
+            <section id='profile_banner' className='jumbotron breadcumb no-bg' style={{backgroundImage: `url(${process.env.REACT_APP_COLLECTION_API_URL + (author && author.banner && author.banner.url ? author.banner.url : '/uploads/4_1ec08f99e2.jpg')})`}}>
                 <div className='mainbreadcumb'>
                 </div>
             </section>
@@ -231,7 +225,7 @@ const Profile = ({ authorId }) => {
                                         <Form>
                                             <h5>Profile image <i className="fa fa-info-circle id-color-2" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Recommend 400 x 400. Max size: 50MB. Click the image to upload." aria-label="Recommend 400 x 400. Max size: 50MB. Click the image to upload."></i></h5>
                                             <img 
-                                                src={(author && author.avatar && author.avatar.url) ? profileImageTemp ? profileImageTemp : (api.baseUrl + author.avatar.url) : '../../img/author_single/author_thumbnail.jpg'} 
+                                                src={(author && author.avatar && author.avatar.url) ? profileImageTemp ? profileImageTemp : (process.env.REACT_APP_COLLECTION_API_URL + author.avatar.url) : '../../img/author_single/author_thumbnail.jpg'} 
                                                 id="click_profile_img" 
                                                 className="d-profile-img-edit img-fluid" 
                                                 alt=""
@@ -262,7 +256,7 @@ const Profile = ({ authorId }) => {
                                         <Form>
                                             <h5>Profile banner <i className="fa fa-info-circle id-color-2" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Recommend 1500 x 500. Max size: 50MB. Click the image to upload." aria-label="Recommend 1500 x 500. Max size: 50MB. Click the image to upload."></i></h5>
                                             <img 
-                                                src={(author && author.banner && author.banner.url) ? profileBannerTemp ? profileBannerTemp : (api.baseUrl + author.banner.url) : "../../img/author_single/author_banner.jpg"} 
+                                                src={(author && author.banner && author.banner.url) ? profileBannerTemp ? profileBannerTemp : (process.env.REACT_APP_COLLECTION_API_URL + author.banner.url) : "../../img/author_single/author_banner.jpg"} 
                                                 id="click_banner_img" 
                                                 className="d-banner-img-edit img-fluid" 
                                                 alt=""

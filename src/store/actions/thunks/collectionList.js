@@ -1,16 +1,15 @@
 import { Axios } from '../../../core/axios';
 import * as actions from '../../actions';
-import api from '../../../core/api';
 
 export const getNFTsByFilter = (filterData) => async (dispatch) =>  {
   dispatch(actions.getCollectionList.request(true));
     var config = {
-      headers: {'Access-Control-Allow-Origin': 'http://qamelot.coming-soon.xyz/'}
+      headers: {'Access-Control-Allow-Origin': process.env.REACT_APP_COLLECTION_API_URL}
     }
   try {
     let param = filterData;
     let filter = 'timeRange=' + param;
-    const data = await Axios.get(`${api.devUrl}?${filter}`, {
+    const data = await Axios.get(`${process.env.REACT_APP_COLLECTION_API_URL}?${filter}`, {
       params: {} 
     });
     dispatch(actions.getCollectionList.request(false));
