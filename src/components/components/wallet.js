@@ -1,13 +1,17 @@
 import {React, useState, useEffect } from 'react';
-import { createGlobalStyle } from 'styled-components';
+// import { createGlobalStyle } from 'styled-components';
+import { setWalletAddress } from "../../store/actions/thunks/user";
 import { ethers } from 'ethers';
+import { useDispatch } from "react-redux";
 
 const Wallet= () => {
-    const [isConnected, setIsConnected] = useState(false);
+    const dispatch = useDispatch();
+
+    const [isConnected, setIsConnected] = useState(false);  //this will be used in another feature
 
     const [accountAddress, setAccountAddress] = useState('');
 
-    const [haveMetamask, sethaveMetamask] = useState(true);
+    const [haveMetamask, sethaveMetamask] = useState(true); // will be used in another feature in future
 
     const [accountBalance, setAccountBalance] = useState(true);
 
@@ -16,6 +20,7 @@ const Wallet= () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
 
     useEffect(() => {
+        // Checking availability of the web3 provider
         const checkMetamaskAvailability = async () => {
           if (!ethereum) {
             sethaveMetamask(false);
@@ -25,6 +30,17 @@ const Wallet= () => {
         checkMetamaskAvailability();
       }, []);
 
+    //   checking if the metamask is installed
+      const checkMetaMaskInstalled = () => {
+        if (typeof ethereum.ethereum !== 'undefined' || (typeof ethereum.web3 !== 'undefined')) {
+            alert("Metamask not installed. Please install it manually.");
+        }
+        else{
+            connectWallet()
+        }
+      }
+
+    //   Connect Wallet to Metamask Server
       const connectWallet = async () => {
             try {
                 if (!ethereum) {
@@ -35,16 +51,24 @@ const Wallet= () => {
                     method: 'eth_requestAccounts',
                 });
 
-                let balance = await provider.getBalance(accounts[0]);
-                let bal = ethers.utils.formatEther(balance);
+                const balance = await provider.getBalance(accounts[0]);
+                const bal = ethers.utils.formatEther(balance);
 
                 setAccountAddress(accounts[0]);
+               
                 setAccountBalance(bal);
                 setIsConnected(true);
             } catch (error) {
                 setIsConnected(false);
             }
         };
+
+        useEffect(() => {
+            if(accountAddress){
+                console.log('accountAddress: ',accountAddress)
+                dispatch(setWalletAddress(accountAddress))
+            };
+          }, [accountAddress]);
     return (
         <div className="row">
             <div className="col-lg-3 mb30 metamask">
@@ -53,7 +77,7 @@ const Wallet= () => {
                     <img src="./img/wallet/1.png" alt="" className="mb20"/>
                     <h4>Metamask</h4>
                     <p>Start exploring blockchain applications in seconds.  Trusted by over 1 million users worldwide.</p>
-                    <button type="button" onClick={connectWallet} className="btn btn-primary" >Connect</button>
+                    <button type="button" onClick={checkMetaMaskInstalled} className="btn btn-primary" >Connect</button>
                 </span>
             </div>
             <div className="col-lg-3 mb30">

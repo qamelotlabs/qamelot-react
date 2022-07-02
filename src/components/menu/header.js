@@ -126,12 +126,13 @@ const Header = function({ className }) {
           <div className='logo px-0'>
               <div className='navbar-title navbar-item'>
                 <NavLink to="/">
-                <img
+                {/* <img
                     src="/img/logo.png"
                     className="img-fluid d-block"
                     alt="#"
-                  />
-                  <img
+                  /> */}
+                  <h2 style={{color: 'white'}}>Qamelot</h2>
+                  {/* <img
                     src="/img/logo-2.png"
                     className="img-fluid d-3"
                     alt="#"
@@ -145,7 +146,7 @@ const Header = function({ className }) {
                     src="/img/logo-light.png"
                     className="img-fluid d-none"
                     alt="#"
-                  />
+                  /> */}
                 </NavLink>
               </div>
           </div>
@@ -404,7 +405,7 @@ const Header = function({ className }) {
                 <div className="logout">
                   <NavLink to="/createOptions">Create</NavLink>
                   <div id="de-click-menu-profile" className="de-menu-profile" onClick={() => btn_icon_pop(!showpop)} ref={refpop}>                           
-                      <img src="../../img/author_single/author_thumbnail.jpg" alt=""/>
+                      {/* <img src="../../img/author_single/author_thumbnail.jpg" alt=""/> */}
                       {showpop && 
                         <div className="popshow">
                           {/* <div className="d-line"></div> */}

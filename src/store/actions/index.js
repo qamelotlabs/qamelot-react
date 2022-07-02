@@ -39,6 +39,12 @@ export const getCollectionList = asyncAction(
     'nft/GET_COLLECTION_LIST_FAIL'
 )();
 
+export const user = asyncAction(
+    'nft/SET_USER',
+    'nft/SET_USER_SUCCESS',
+    'nft/SET_USER_FAIL'
+)();
+
 export const getAuthorRanking = asyncAction(
     'nft/GET_AUTHOR_RANKING',
     'nft/GET_AUTHOR_RANKING_SUCCESS',
