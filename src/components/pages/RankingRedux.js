@@ -151,6 +151,10 @@ const RankingRedux = () => {
     setShowCollectionStats(false);
   }
 
+  const kFormatter = (num) => {
+    return Math.abs(num) > 999 ? Math.sign(num) * ((Math.abs(num) / 1000).toFixed(1)) + 'k' : Math.sign(num) * Math.abs(num)
+  }
+
   return (
     <div>
       <GlobalStyles />
@@ -243,21 +247,11 @@ const RankingRedux = () => {
                           </div>
                           {collection.collectionName}
                         </th>
-                        <td>{collection.stats.totalVolume}
-                        </td>
-                        <td
-                          className={
-                            collection[`${selectedTimeRange}`] < 0
-                              ? "d-min"
-                              : "d-plus"
-                          }
-                        >{`${
-                          collection[`${selectedTimeRange}`] < 0 ? "" : "+"
-                        }${collection[`${selectedTimeRange}`]}%`}</td>
-                        {/* <td className={collection.author_sale.weekly_sales < 0 ? "d-min" : "d-plus"}>{`${collection.author_sale.weekly_sales < 0 ? '' : '+'}${collection.author_sale.weekly_sales}%`}</td> */}
-                        <td>{collection.stats.floorPrice}</td>
-                        <td>{collection.stats.numOwners}k</td>
-                        <td>{collection.stats.totalSupply}k</td>
+                        <td>{kFormatter(collection.stats.totalVolume)}</td>
+                        <td className={collection.stats.oneDayChange < 0 ? "d-min" : "d-plus"}>{`${collection.stats.oneDayChange < 0 ? '' : '+'}${collection.stats.oneDayChange}%`}</td>
+                        <td>{kFormatter(collection.stats.floorPrice)}</td>
+                        <td>{kFormatter(collection.stats.numOwners)}</td>
+                        <td>{kFormatter(collection.stats.totalSupply)}</td>
                       </tr>
                     ))}
                 </tbody>
