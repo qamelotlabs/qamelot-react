@@ -72,9 +72,9 @@ const footer= () => (
                                     <span onClick={()=> window.open("", "_self")}>
                                         {/* <img alt="" className="f-logo d-1" src="./img/logo.png" />
                                         <img alt="" className="f-logo d-3" src="./img/logo-2-light.png" /> */}
-                                        <h2 style={{color: 'black'}}>Qamelot</h2>
-                                        {/* <img alt="" className="f-logo d-4" src="./img/logo-3.png" /> */}
-                                        <span className="copy">&copy; Copyright 2022 - Appycodes</span>
+                                        {/* <h2 style={{color: 'black'}}>Qamelot</h2> */}
+                                        <img alt="" className="f-logo d-1" width={50} src="./img/logo.png" />
+                                        {/* <span className="copy">&copy; Copyright 2022 - Appycodes</span> */}
                                     </span>
                                 </div>
                                 <div className="de-flex-col">

@@ -126,27 +126,7 @@ const Header = function({ className }) {
           <div className='logo px-0'>
               <div className='navbar-title navbar-item'>
                 <NavLink to="/">
-                {/* <img
-                    src="/img/logo.png"
-                    className="img-fluid d-block"
-                    alt="#"
-                  /> */}
-                  <h2 style={{color: 'white'}}>Qamelot</h2>
-                  {/* <img
-                    src="/img/logo-2.png"
-                    className="img-fluid d-3"
-                    alt="#"
-                  />
-                  <img
-                    src="/img/logo-3.png"
-                    className="img-fluid d-4"
-                    alt="#"
-                  />
-                  <img
-                    src="/img/logo-light.png"
-                    className="img-fluid d-none"
-                    alt="#"
-                  /> */}
+                <img alt="" className="f-logo d-1" width={35} src="./img/logo.png" />
                 </NavLink>
               </div>
           </div>
