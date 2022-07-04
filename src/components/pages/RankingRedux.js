@@ -7,6 +7,7 @@ import * as selectors from "../../store/selectors";
 import { getNFTsByFilter } from "../../store/actions/thunks";
 import Stats from "./Stats";
 
+
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.sticky.white {
     background: #403f83;
@@ -216,7 +217,19 @@ const RankingRedux = () => {
                 <tr></tr>
               </thead>
               {collectionLoadingState ? (
-                <div className="loader">Loading </div>
+                <tbody>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td className="loader">
+                    Loading....
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
               ) : (
                 <tbody>
                   {collections &&
