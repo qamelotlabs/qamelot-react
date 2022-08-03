@@ -7,7 +7,6 @@ import * as selectors from "../../store/selectors";
 import { getNFTsByFilter } from "../../store/actions/thunks";
 import Stats from "./Stats";
 
-
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.sticky.white {
     background: #403f83;
@@ -80,6 +79,10 @@ const customStyles = {
   }),
 };
 
+
+
+
+
 const options = [
   { value: "7d", label: "Last 7 days" },
   { value: "1d", label: "Last 24 hours" },
@@ -100,6 +103,7 @@ const RankingRedux = () => {
 
   const [showCollectionStats, setShowCollectionStats] = useState(false);
   const collectionLoadingState = useSelector(selectors.collectionStateLoading);
+
 
   useEffect(() => {
     setCollections(collectionState ? collectionState.data?.data : []);
@@ -172,6 +176,7 @@ const RankingRedux = () => {
             </div>
           </div>
         </div>
+
       </section>
       <section className="container">
         <div className="row">

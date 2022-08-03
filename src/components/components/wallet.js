@@ -27,9 +27,8 @@ const Wallet = () => {
             } else {
                 provider = new ethers.providers.Web3Provider(window.ethereum);
                 sethaveMetamask(true);
+                connectWallet();
             }
-            
-            
         };
         checkMetamaskAvailability();
 
@@ -42,7 +41,7 @@ const Wallet = () => {
             alert("Metamask not installed. Please install it manually. Download from this link: https://metamask.io/download/");
         }
         else {
-            connectWallet()
+            connectWallet();
         }
     }
 
