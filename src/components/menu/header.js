@@ -114,19 +114,6 @@ const Header = function ({ className, canOpenModal }) {
     const totop = document.getElementById("scroll-to-top");
     const sticky = header.offsetTop;
 
-    // Checking availability of the web3 provider
-    // const checkMetamaskAvailability = async () => {
-    //   if (!ethereum) {
-    //     alert("Metamask not installed. Please install it manually. Download from this link: https://metamask.io/download/");
-    //     sethaveMetamask(false);
-    //   } else {
-    //     provider = new ethers.providers.Web3Provider(window.ethereum);
-    //     sethaveMetamask(true);
-    //     connectWallet();
-    //   }
-    // };
-    // checkMetamaskAvailability();
-
     console.log("NO META", ethereum)
 
     const scrollCallBack = window.addEventListener("scroll", () => {
@@ -324,7 +311,6 @@ const Header = function ({ className, canOpenModal }) {
 
           <div className='mainside'>
             <div className='connect-wal'>
-              {/* <NavLink to="/wallet">Login</NavLink> */}
               <button type="button" onClick={checkMetaMaskInstalled} className="btn btn-primary" >Connect</button>
             </div>
             <div className="logout">
